@@ -77,6 +77,80 @@
         RESI_MED_SMALL2 = 0x75,
         RESI_MED_SMALL3 = 0x76,
         RESI_MED_SMALL4 = 0x77,
+
+        //2x2
+        APART_CHEAP = 0x8C,
+        APARTMENTS = 0x8D,
+        APARTMENTS2 = 0x8E,
+        APARTMENT_NICE = 0x8F,
+        APARTMENT_NICE2 = 0x90,
+        CONDO = 0x91,
+        CONDO2 = 0x92,
+        CONDO3 = 0x93,
+
+        //Commercial, 2x2:
+        SHOPCTR = 94,
+        GROC = 95,
+
+    /*94: Shopping center
+    95: Grocery store
+    96: Office building
+    97: Resort hotel
+    98: Office building
+    99: Office / Retail
+    9A-9D: Office building
+  Industrial, 2x2:
+    9E: Warehouse
+    9F: Chemical processing
+    A0-A5: Factory
+  Miscellaneous, 2x2:
+    A6-A9: Construction
+    AA-AD: Abandoned building
+  Residential, 3x3:
+    AE-AF: Large apartment building
+    B0-B1: Condominium
+  Commercial, 3x3:
+    B2: Office park
+    B3: Office tower
+    B4: Mini-mall
+    B5: Theater square
+    B6: Drive-in theater
+    B7-B8: Office tower
+    B9: Parking lot
+    BA: Historic office building
+    BB: Corporate headquarters
+  Industrial, 3x3:
+    BC: Chemical processing
+    BD: Large factory
+    BE: Industrial thingamajig
+    BF: Factory
+    C0: Large warehouse
+    C1: Warehouse
+  Miscellaneous, 3x3:
+    C2-C3: Construction
+    C4-C5: Abandoned building
+  Power plants:
+    C6-C7: Hydroelectric power (1x1)
+    C8: Wind power (1x1)
+    C9: Natural gas power plant (4x4)
+    CA: Oil power plant (4x4)
+    CB: Nuclear power plant (4x4)
+    CC: Solar power plant (4x4)
+    CD: Microwave power receiver (4x4)
+    CE: Fusion power plant (4x4)
+    CF: Coal power plant (4x4)
+  City services:
+    D0: City hall
+    D1: Hospital
+    D2: Police station
+    D3: Fire station
+    D4: Museum
+    D5: Park (big)
+    D6: School
+    D7: Stadium
+    D8: Prison
+    D9: College
+    DA: Zoo*/
     }
 
     /// <summary>

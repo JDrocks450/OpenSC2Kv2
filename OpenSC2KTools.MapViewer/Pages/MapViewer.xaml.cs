@@ -5,7 +5,6 @@ using OpenSC2Kv2.API.IFF;
 using OpenSC2Kv2.API.World;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -33,6 +32,7 @@ namespace OpenSC2KTools.MapViewer.Pages
         SPRRender renderer;
         SC2SpriteArchive archive;
         ImageSource tileAsset;
+        Dictionary<SC2WorldTile, Image[]> tileMap = new();
 
         bool movingCamera = false;
         System.Windows.Point cameraStartPoint = new System.Windows.Point(0,0);
@@ -63,13 +63,16 @@ namespace OpenSC2KTools.MapViewer.Pages
             renderer = new SPRRender();
             var image = renderer.Render(tileResource, 0);
             
-            tileAsset = InteropBitmapCache.ToInteropBitmap(tileResource.Header.ImageName, image);            
+            tileAsset = InteropBitmapCache.ToInteropBitmap(tileResource.Header.ImageName, image);
+            LoadingDescBlock.Text = "Select a City...";
         }
 
         private async void Render(SC2World World)
         {
             if (!ready) return;
-            MapView.Children.Clear();
+
+            RenderLoadBar.Value = 0;
+            RenderLoadBar.IsIndeterminate = false;
 
             LoadingGrid.Visibility = Visibility.Visible;
             int totalHeight = World.Height * SC2WorldTile.TILE_HEIGHT;
@@ -86,69 +89,124 @@ namespace OpenSC2KTools.MapViewer.Pages
                 Path = new PropertyPath(System.Windows.Controls.Image.SourceProperty)
             };
             var palette = SC2Palette.Default;
-            await Task.Run(async delegate
+            await Dispatcher.InvokeAsync(delegate
             {
-                List<System.Windows.Controls.Image> images = new();
                 foreach (var tile in World.WorldTiles)
-                {                    
-                    await Dispatcher.InvokeAsync(delegate
+                {
+
+                    Image[] images = null;
+                    if (!tileMap.TryGetValue(tile, out images))
                     {
-                        var imageCtrl = new System.Windows.Controls.Image()
+                        LoadingDescBlock.Text = "Decoding Graphics...";
+                        RenderLoadBar.Maximum = World.WorldTiles.Count * 2;
+                        var loadedImage = new System.Windows.Controls.Image()
                         {
                             Width = SC2WorldTile.TILE_WIDTH,
                             Height = SC2WorldTile.TILE_HEIGHT,
                             ToolTip = tile.ToString()
-                            
+
                         };
+                        images = new Image[1];
+                        images[0] = loadedImage;
+
                         bool success = false;
-                        if (tile.TerrainDescription != null 
+                        if (tile.TerrainDescription != null
                             && tile.TerrainDescription.TerrainID != default)
                         {
                             ushort textureID = (ushort)((tile.TerrainDescription.WaterID ?? tile.TerrainDescription.TerrainID) + 1000);
-                            GetImageFromGraphicID(ref imageCtrl, textureID, palette, out var graphicResource);
+                            GetImageFromGraphicID(ref loadedImage, textureID, palette, out var graphicResource);
                             tile.TileWidth = graphicResource.Width.Value;
                             tile.TileHeight = graphicResource.Height.Value;
                             success = true;
                         }
-
-                        var position = tile.GetWorldPos() + new Point2D(0, totalHeight / 2);
                         if (!success)
                         {
-                            imageCtrl.SetBinding(System.Windows.Controls.Image.SourceProperty, binding);
-                            imageCtrl.Opacity = .5;
+                            images[0].SetBinding(System.Windows.Controls.Image.SourceProperty, binding);
+                            images[0].Opacity = .5;
                         }
-                        RenderOptions.SetBitmapScalingMode(imageCtrl, BitmapScalingMode.NearestNeighbor);
-                        Canvas.SetLeft(imageCtrl, position.X);
-                        Canvas.SetTop(imageCtrl, position.Y);
-                        images.Add(imageCtrl);
+                    }
+                    if (images == null || images[0] == null) return;
+                    var imageCtrl = images[0];
+                    var position = tile.GetWorldPos() + new Point2D(0, totalHeight / 2);
 
+                    RenderOptions.SetBitmapScalingMode(imageCtrl, BitmapScalingMode.NearestNeighbor);
+                    Canvas.SetLeft(imageCtrl, position.X);
+                    Canvas.SetTop(imageCtrl, position.Y);
+
+                    if (images.Length != 2 || images[1] == null)
+                    {
                         //BUILDING
                         if (tile.BuildingDescription != null && tile.BuildingDescription.DescriptorID != 0x00)
                         {
+                            bool multitile = tile.IsMultitile();
+                            if (multitile && tile.ZoneDescription.CornerFlag is not SC2CornerFlag.TOP)
+                                goto Skip;
+
                             ushort textureID = (ushort)(tile.BuildingDescription.TryGetGraphicID());
                             var accyBuildingImage = new System.Windows.Controls.Image()
                             {
                                 Width = SC2WorldTile.TILE_WIDTH,
                                 Height = SC2WorldTile.TILE_HEIGHT,
-                                ToolTip = tile.BuildingDescription.ToString()
+                                ToolTip = $"BUILDING INFO:\n {tile.BuildingDescription.ToString()}\n" +
+                                $"ZONE INFO:\n{tile.ZoneDescription}"
                             };
                             GetImageFromGraphicID(ref accyBuildingImage, textureID, palette, out var graphicResource);
                             RenderOptions.SetBitmapScalingMode(accyBuildingImage, BitmapScalingMode.NearestNeighbor);
-                            Canvas.SetLeft(accyBuildingImage, position.X);
-                            Canvas.SetTop(accyBuildingImage, position.Y);
-                            images.Add(accyBuildingImage);
-                        }                                                
-                    });
-                }
-                await Dispatcher.InvokeAsync(delegate
-                {
-                    foreach (var image in images)
-                    {
-                        MapView.Children.Add(image);
-                        
+                            Array.Resize(ref images, 2);
+                            images[1] = accyBuildingImage;
+                        Skip:
+                            ;
+                        }
                     }
-                });
 
+                    if (images.Length == 2 && images[1] != null)
+                    {
+                        var accyBuildingImage = images[1];
+                        if (accyBuildingImage.Width > SC2WorldTile.TILE_WIDTH)
+                        {
+                            var diff = accyBuildingImage.Width - SC2WorldTile.TILE_WIDTH;
+                            position.X -= (int)(diff / 2);
+                        }
+                        position.Y -= (int)accyBuildingImage.Height;
+                        position.Y += tile.TileHeight;
+                        Canvas.SetLeft(accyBuildingImage, (position.X));
+                        Canvas.SetTop(accyBuildingImage, position.Y);
+                    }
+
+                    imageCtrl.MouseLeftButtonUp += delegate
+                    {
+                        DoUpdateOverridesWizard(tile);
+                    };
+                    if (!tileMap.ContainsKey(tile))
+                        tileMap.Add(tile, images);
+                    RenderLoadBar.Value++;
+                }
+            });
+            await Dispatcher.InvokeAsync(delegate
+            {
+                int pass = 0;
+                LoadingDescBlock.Text = "Rendering...";
+                foreach (var images in tileMap.Values)
+                {
+                    foreach (var img in images)
+                    {
+                        if (img.Parent == null)
+                            MapView.Children.Add(img);
+                    }
+                    RenderLoadBar.Value++;
+                }
+                return;
+                pass++;
+                foreach (var images in tileMap.Values)
+                {
+                    if (images.Length == 2 && images[1] != null)
+                    {
+                        var img = images[pass];
+                        if (img.Parent == null)
+                            MapView.Children.Add(img);
+                        RenderLoadBar.Value++;
+                    }
+                }
             });
             MapView.Width = World.Width * SC2WorldTile.TILE_WIDTH;
             MapView.Height = totalHeight;
@@ -177,7 +235,11 @@ namespace OpenSC2KTools.MapViewer.Pages
             this.parser = parser;
 
             if (ready)
+            {
+                MapView.Children.Clear();
+                tileMap.Clear();
                 Render(parser.LoadedWorld);
+            }
         }
 
         private void Page_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -223,6 +285,28 @@ namespace OpenSC2KTools.MapViewer.Pages
                     MapView.Margin = new Thickness(0);
                     break;
             }
+        }
+
+        private async void DoUpdateOverridesWizard(SC2WorldTile Target)
+        {
+            var window = new TileProperties(Target.OverrideDefinition);
+            if (window.ShowDialog() ?? false)
+            {
+                SC2WorldOverrides.AddOverride(Target, window.EditingDef);
+                SC2WorldOverrides.SaveChanges();
+                await SC2WorldOverrides.EnsureUpdated();
+                ReticulatePositions();
+            }
+        }
+
+        private void ReticulatePositions()
+        {
+            Render(parser.LoadedWorld);
+        }
+
+        private void DbgTilePosItem_Click(object sender, RoutedEventArgs e)
+        {
+            ReticulatePositions();
         }
     }
 }

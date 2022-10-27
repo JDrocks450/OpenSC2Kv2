@@ -24,6 +24,7 @@
             RegisterHandler(SC2SegmentTypes.ALTM, new ALTMSegmentHandler());
             RegisterHandler(SC2SegmentTypes.XTER, new XTERSegmentHandler());
             RegisterHandler(SC2SegmentTypes.XBLD, new XBLDSegmentHandler());
+            RegisterHandler(SC2SegmentTypes.XZON, new XZONSegmentHandler());
         }
     }
 }

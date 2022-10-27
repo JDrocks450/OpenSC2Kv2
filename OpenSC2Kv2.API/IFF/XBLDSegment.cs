@@ -27,7 +27,7 @@ namespace OpenSC2Kv2.API.IFF
 
         public override string ToString()
         {
-            return $"XBLD:\nDESC: {DescriptorID}\n BLDID: {Type}\nSUBTYPE?: {DescriptorID}";
+            return $"XBLD:\nDESC: {DescriptorID}\n BLDID: {Enum.GetName(Type) ?? Type.ToString()}\nSUBTYPE?: {DescriptorID}";
         }
     }
 

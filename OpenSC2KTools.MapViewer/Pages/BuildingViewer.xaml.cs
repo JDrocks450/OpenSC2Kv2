@@ -4,7 +4,6 @@ using OpenSC2Kv2.API.Graphics.Win95;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -134,7 +133,7 @@ namespace OpenSC2KTools.MapViewer.Pages
                 if (source == null) continue;                
                 await Dispatcher.InvokeAsync(delegate
                 {
-                    var imgControl = new System.Windows.Controls.Image()
+                    var imgControl = new Image()
                     {
                         Source = source
                     };
@@ -165,7 +164,7 @@ namespace OpenSC2KTools.MapViewer.Pages
             var name = resource.Header.ImageName + $"_{frame}";
             if (InteropBitmapCache._bitmaps.TryGetValue(name, out var imageS))
                 return imageS;
-            Bitmap image = null;
+            System.Drawing.Bitmap image = null;
             await Task.Run(delegate
             {
                 image = renderer.Render(resource, frame);
@@ -217,6 +216,62 @@ namespace OpenSC2KTools.MapViewer.Pages
                 DATFilePath = new Uri(dialog.FileName);
                 await Load();
             }            
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            var selectedGraphic = currentResource;
+            if (selectedGraphic == default) return;
+
+            StackPanel windStack = new StackPanel()
+            {
+                Margin = new Thickness(10)
+            };
+            Window window = new Window()
+            {
+                ResizeMode = ResizeMode.NoResize,
+                SizeToContent = SizeToContent.WidthAndHeight,
+                WindowStyle = WindowStyle.None,
+                Content = new Button()
+                {
+                    Content = windStack,
+                },
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = Parent as Window ?? Application.Current.MainWindow
+            };
+            int scaleFactor = 10;
+            Image previewImage = new Image()
+            {
+                Width = selectedGraphic.Width.Value * scaleFactor,
+                Height = selectedGraphic.Height.Value * scaleFactor,
+                Stretch = Stretch.Fill
+            };
+            previewImage.SetBinding(Image.SourceProperty, new Binding()
+            {
+                Source = PreviewImage,
+                Path = new PropertyPath(Image.SourceProperty)
+            });
+            RenderOptions.SetBitmapScalingMode(previewImage, BitmapScalingMode.NearestNeighbor);
+
+            Border imgBorder = new Border()
+            {
+                Background = Brushes.Magenta,
+                Child = previewImage
+            };
+            windStack.Children.Add(imgBorder);
+            var button = new Button()
+            {
+                IsDefault = true,
+                Content = "OK",
+                Width = 150,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Padding = new Thickness(10, 5, 10, 5),
+                Margin = new Thickness(0, 10, 0, 0),
+            };
+            button.Click += delegate { window.Close(); };
+            windStack.Children.Add(button);
+
+            window.Show();
         }
 
         private void ButtonSlower_Click(object sender, RoutedEventArgs e)

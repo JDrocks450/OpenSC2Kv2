@@ -12,7 +12,8 @@ namespace OpenSC2Kv2.API.IFF
     /// </summary>
     internal class SC2WorldGenerator
     {
-        public static SC2World GenerateWorld(SC2File File)
+        private Dictionary<SC2WorldTile, SC2WorldTileFlags> flagMap = new();
+        public static async Task<SC2World> GenerateWorld(SC2File File)
         {
             var world = new SC2World()
             {
@@ -21,6 +22,7 @@ namespace OpenSC2Kv2.API.IFF
                 Height = File.CityInformation.Height,
                 WaterLevel = File.CityInformation.WaterLevel,
             };
+            await SC2WorldOverrides.EnsureUpdated();
             int x = 0, y = 0;
             for (int i = 0; i < (world.Height * world.Width); i++)
             {
@@ -80,9 +82,12 @@ namespace OpenSC2Kv2.API.IFF
                 var descriptor = tile.TerrainDescription.TerrainDescriptorInstance;
                 if (descriptor > 0 && descriptor < 0x10)
                 {
-                    //if (descriptor != 3 && descriptor != 12 && descriptor != 4 && descriptor != 10 && descriptor != 8)
+                    if (descriptor != 3 && descriptor != 12 && descriptor != 4 && descriptor != 10 && descriptor != 8)
                         tile.Altitude += 1;
                 }
+                else
+                    if (tile.TerrainDescription.Watered && tile.TerrainDescription.WaterID == 284)
+                    tile.Altitude+=1;
                 index++;
             }
         }
@@ -100,6 +105,20 @@ namespace OpenSC2Kv2.API.IFF
                 index++;
             }
         }
+        /// <summary>
+        /// Applies extracted <see cref="XZONSegment"/> data to the given <see cref="SC2World"/>
+        /// </summary>
+        internal static void ApplyData(SC2World world, IEnumerable<XZONSegment> XTERData)
+        {
+            int index = 0;
+            var data = XTERData.ToList();
+            foreach (var tile in world.WorldTiles)
+            {
+                if (index >= data.Count) continue;
+                tile.ZoneDescription = data[index].ZoneInformation;
+                index++;
+            }
+        }        
 
         public void PopulateWorldTiles(SC2File File)
         {

@@ -8,7 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\tileoverrides.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\OpenSC2Kv2.API\OpenSC2Kv2.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\" />
   </ItemGroup>
 
 </Project>

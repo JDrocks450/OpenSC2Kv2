@@ -1,4 +1,6 @@
-﻿namespace OpenSC2Kv2.API.World
+﻿using OpenSC2Kv2.API.IFF;
+
+namespace OpenSC2Kv2.API.World
 {
     /// <summary>
     /// Contains information on a SimCity 2000 world.
@@ -28,5 +30,14 @@
         /// <para><see cref="SC2WorldTile"/>s contain information on Terrain, Buildings, Zoning, etc.</para>
         /// </summary>
         public HashSet<SC2WorldTile> WorldTiles { get; set; } = new();
+        /// <summary>
+        /// The camera rotation, currently.
+        /// </summary>
+        public int Rotation { get; set; } = 0;        
+
+        public SC2WorldTileFlags GetFlagsForTile(SC2WorldTile Tile)
+        {
+            return new();
+        }        
     }
 }

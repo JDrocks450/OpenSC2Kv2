@@ -76,17 +76,15 @@ namespace OpenSC2Kv2.API
     }
     /// <summary>
     /// Represents a Point in 2D space.
-    /// <para>This type implements serializable out-of-the-box</para>
     /// </summary>
     [Serializable]
     public struct Point2D
     {
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int X { get; set; } = 0;
+        public int Y { get; set; } = 0;
         public Point2D()
         {
-            X = 0;
-            Y = 0;
+            
         }
         public Point2D(int X, int Y)
         {

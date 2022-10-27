@@ -77,7 +77,7 @@ namespace OpenSC2Kv2.API
                 Name = sc2File.GetSegmentByType(SC2SegmentTypes.CNAM)?.Text ?? "NewCity",                
             };
 
-            SC2World world = SC2WorldGenerator.GenerateWorld(sc2File);            
+            SC2World world = await SC2WorldGenerator.GenerateWorld(sc2File);            
 
             foreach(var segment in sc2File.Segments)
             {
@@ -89,6 +89,7 @@ namespace OpenSC2Kv2.API
             SC2WorldGenerator.ApplyData(world, sc2File.GetSegmentItemData<ALTMSegment>(SC2SegmentTypes.ALTM));
             SC2WorldGenerator.ApplyData(world, sc2File.GetSegmentItemData<XTERSegment>(SC2SegmentTypes.XTER));
             SC2WorldGenerator.ApplyData(world, sc2File.GetSegmentItemData<XBLDSegment>(SC2SegmentTypes.XBLD));
+            SC2WorldGenerator.ApplyData(world, sc2File.GetSegmentItemData<XZONSegment>(SC2SegmentTypes.XZON));
 
             LoadedWorld = world;
             ParsedFile = sc2File;

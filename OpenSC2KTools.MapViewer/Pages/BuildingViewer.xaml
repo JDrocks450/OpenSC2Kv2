@@ -49,11 +49,27 @@
                 </Border>
                 <DockPanel Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" DockPanel.Dock="Right">
                     <TextBlock x:Name="NameBlock" DockPanel.Dock="Top" Margin="10,10,10,0" FontWeight="Bold" FontFamily="Segoe UI" FontSize="16">TEXTURE NAME</TextBlock>
-                    <Button Margin="10" DockPanel.Dock="Top">
+                    <Button Margin="10" DockPanel.Dock="Top" Click="Button_Click">
                         <Viewbox>
-                            <Image Margin="10" x:Name="PreviewImage" Width="250" Height="250" Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+                            <Border Margin="10">
+                                <Image x:Name="PreviewImage" Width="250" Height="250" Stretch="Uniform" RenderOptions.BitmapScalingMode="NearestNeighbor">
+                                </Image>
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsChecked, ElementName=BGCheckBox}" Value="True">
+                                                <Setter Property="Background" Value="Magenta"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsChecked, ElementName=BGCheckBox}" Value="False">
+                                                <Setter Property="Background" Value="Transparent"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                            </Border>
                         </Viewbox>
                     </Button>
+                    <CheckBox Name="BGCheckBox" FontWeight="Bold" DockPanel.Dock="Top" Margin="10,0,10,10">Fill Sprite Background</CheckBox>
                     <TextBox VerticalScrollBarVisibility="Visible" x:Name="ImageDetailsBlock" Margin="10,5"></TextBox>
                 </DockPanel>
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled">

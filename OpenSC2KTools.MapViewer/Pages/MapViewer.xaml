@@ -7,17 +7,23 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="MapViewer" Background="White" MouseWheel="Page_MouseWheel" MouseRightButtonDown="Page_MouseRightButtonDown" MouseRightButtonUp="Page_MouseRightButtonUp" PreviewMouseMove="Page_PreviewMouseMove" KeyUp="Page_KeyUp">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Debug...">
+                <MenuItem Name="DbgTilePosItem" Header="Update Tile Positions" Click="DbgTilePosItem_Click"/>
+            </MenuItem>
+        </Menu>
+        <Grid Background="#301001">
+            <Grid x:Name="LoadingGrid" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Button IsEnabled="False"/>
+                <ProgressBar x:Name="RenderLoadBar" Width="200" Margin="10" Height="12" IsIndeterminate="True" VerticalAlignment="Top" Foreground="#FF00D703"/>
+                <TextBlock x:Name="LoadingDescBlock" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,25,0,10" FontWeight="Bold">Rendering Landscape...</TextBlock>
+            </Grid>
+            <Viewbox x:Name="MapViewBox">
+                <Canvas Name="MapView">
 
-    <Grid Background="#301001">
-        <Grid x:Name="LoadingGrid" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <Button IsEnabled="False"/>
-            <ProgressBar Width="200" Margin="10" Height="12" IsIndeterminate="True" VerticalAlignment="Top" Foreground="#FF00D703"/>
-            <TextBlock x:Name="LoadingDescBlock" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,25,0,10" FontWeight="Bold">Rendering Landscape...</TextBlock>
+                </Canvas>
+            </Viewbox>
         </Grid>
-        <Viewbox x:Name="MapViewBox">
-            <Canvas Name="MapView">
-                
-            </Canvas>
-        </Viewbox>
-    </Grid>
+    </DockPanel>
 </Page>

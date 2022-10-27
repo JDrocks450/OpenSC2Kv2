@@ -3,6 +3,30 @@
 namespace OpenSC2Kv2.API.World
 {
     /// <summary>
+    /// Represents a definition to override physical properties of a terrain tile.
+    /// </summary>
+    [Serializable]
+    public class OverridePhysicalPropertiesDefinition
+    {
+        /// <summary>
+        /// This is the target TerrainID of this definition.
+        /// <para>The engine will automatically apply this definition to all <see cref="SC2WorldTile"/> 
+        /// instances loaded through standard means using the <see cref="SC2WorldTile.TerrainID"/> property.</para>
+        /// </summary>
+        public int TargetTerrainID { get; set; }
+        /// <summary>
+        /// The spacial offset of this particular tile type (in pixels)
+        /// <para>This is added to the default spacial calculation of all world tiles.</para>
+        /// </summary>
+        public int ManualOffsetX { get; set; } = 0;
+        /// <summary>
+        /// The spacial offset of this particular tile type (in pixels)
+        /// <para>This is added to the default spacial calculation of all world tiles.</para>
+        /// </summary>
+        public int ManualOffsetY { get; set; } = 0;   
+    }
+
+    /// <summary>
     /// Represents all of the data attached to a tile in the SimCity 2000 World
     /// <para>See <see cref="SC2World"/></para>
     /// </summary>
@@ -10,6 +34,8 @@ namespace OpenSC2Kv2.API.World
     {
         public const int TILE_WIDTH = 32, TILE_HEIGHT = 17, LAYER_OFFSET = 12;
         public const byte MAX_ALTITUDE = 32;
+        private SC2TerrainDescriptor _tDef;
+
         /// <summary>
         /// The current coordinate of this tile.
         /// <para>(0,0) is the TOP-LEFT of the grid</para>
@@ -17,6 +43,11 @@ namespace OpenSC2Kv2.API.World
         public GridCoordinate Coordinate { get; set; }
         public int TileWidth { get; set; } = TILE_WIDTH;
         public int TileHeight { get; set; } = TILE_HEIGHT;
+        public int TerrainID => TerrainDescription.TerrainID;
+        /// <summary>
+        /// If there is an override definition for this Terrain type, this will be set to match the set values.
+        /// </summary>
+        public OverridePhysicalPropertiesDefinition? OverrideDefinition { get; set; }
         /// <summary>
         /// See <see cref="Coordinate"/>
         /// </summary>
@@ -39,8 +70,30 @@ namespace OpenSC2Kv2.API.World
         /// Contains information from the <see cref="XTERSegment"/> of the level save data.
         /// <para>Describes how the terrain tile should look.</para>
         /// </summary>
-        public SC2TerrainDescriptor TerrainDescription { get; set; }
+        public SC2TerrainDescriptor TerrainDescription
+        {
+            get => _tDef; 
+            set
+            {
+                _tDef = value;
+                RequestUpdateOverrides();
+            }
+        }
+        private async void RequestUpdateOverrides()
+        {
+            if (!SC2WorldOverrides.Ready)
+                return;
+            SC2WorldOverrides.SetOverrides(this);
+        }
+        /// <summary>
+        /// The descriptor describing how to draw a building tile on this tile, if one is present.
+        /// <para>Use this in conjunction with XZON data to create buildings.</para>
+        /// </summary>
         public SC2BuildingDescriptor BuildingDescription { get; internal set; }
+        /// <summary>
+        /// The descriptor aiding the ability to draw buildings correctly.
+        /// </summary>
+        public SC2ZoneDescriptor ZoneDescription { get; internal set; }
 
         public enum SC2WorldViewPerspectives
         {
@@ -73,7 +126,12 @@ namespace OpenSC2Kv2.API.World
                 case SC2WorldViewPerspectives.HORIZON: scalar = 0; break;
                 case SC2WorldViewPerspectives.TOPDOWN: scalar = 1; break;
             }
-            var basePosition = new Point2D((wCol - wRow) * (TILE_WIDTH / 2), ((wRow + wCol) * (int)(TILE_HEIGHT * scalar)));                
+            int offsetX = OverrideDefinition?.ManualOffsetX ?? 0;
+            int offsetY = OverrideDefinition?.ManualOffsetY ?? 0;
+            if (TerrainDescription != null && TerrainDescription.Watered)
+                offsetY = 0;
+            var basePosition = new Point2D(((wCol - wRow) * (TILE_WIDTH / 2)) + offsetX,
+                ((wRow + wCol) * (int)(TILE_HEIGHT * scalar)) + offsetY);                
             basePosition.Y -= Z * LAYER_OFFSET;
             return basePosition;
         }
@@ -83,7 +141,7 @@ namespace OpenSC2Kv2.API.World
         /// <param name="coordinate">The coordinate to use</param>
         public SC2WorldTile(GridCoordinate coordinate)
         {
-            Coordinate = coordinate;
+            Coordinate = coordinate;            
         }
         /// <summary>
         /// Creates a new SC2WorldTile at the given space.
@@ -95,6 +153,11 @@ namespace OpenSC2Kv2.API.World
         public override string ToString()
         {
             return $"SC2TILE:\n{TerrainDescription}\nALT: {Altitude}\nX: {Column}\nY: {Row}\nWATER?: {IsWaterCovered}";
+        }
+
+        public bool IsMultitile()
+        {
+            return ((int)BuildingDescription.Type >= 0x8C && (int)BuildingDescription.Type <= 0xDA);
         }
     }
 }
