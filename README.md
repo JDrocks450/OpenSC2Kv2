@@ -28,6 +28,8 @@ https://github.com/Objelisks/sc2kparser
 This project is SimCity 2000, reimplemented in C#. This project aims to preserve this older software title through reimplementing its engine in
 modern langauges and open-source. This project is modular, with the API making up the bulk of the actual code powering the experience.
 
+![EGnJllVpJv](https://user-images.githubusercontent.com/16988651/230706267-69bf92d8-ccbb-4bac-8eed-996da289846a.png)
+
 ## Can I play it?
 
 Not at the moment, refer to the roadmap for any updates in regards to gameplay.
