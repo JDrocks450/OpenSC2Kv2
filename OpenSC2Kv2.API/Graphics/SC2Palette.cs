@@ -5,8 +5,7 @@ namespace OpenSC2Kv2.API.Graphics
 {
     public class SC2Palette
     {
-        public static SC2Palette Default => new SC2Palette(
-            @"E:\Games\SC2K\GAME\Bitmaps\PAL_MSTR.BMP");
+        public static SC2Palette Default => new SC2Palette(SC2Path.GetSpecialPath(SC2Path.SpecialPath.PalMstrFilePath));            
 
         public string FilePath { get; }
 

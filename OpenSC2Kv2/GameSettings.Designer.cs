@@ -12,7 +12,7 @@ namespace OpenSC2Kv2.Game {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.1.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "17.14.0.0")]
     internal sealed partial class GameSettings : global::System.Configuration.ApplicationSettingsBase {
         
         private static GameSettings defaultInstance = ((GameSettings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new GameSettings())));
@@ -25,19 +25,10 @@ namespace OpenSC2Kv2.Game {
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("E:\\Games\\SC2K\\GAME\\Data\\LARGE.DAT")]
-        public string LargeGFXPath {
+        [global::System.Configuration.DefaultSettingValueAttribute("E:\\Games\\SC2K\\")]
+        public string InstallDir {
             get {
-                return ((string)(this["LargeGFXPath"]));
-            }
-        }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("E:\\Games\\SC2K\\GAME\\Data\\SMALLMED.DAT")]
-        public string SmMedGFXPath {
-            get {
-                return ((string)(this["SmMedGFXPath"]));
+                return ((string)(this["InstallDir"]));
             }
         }
     }

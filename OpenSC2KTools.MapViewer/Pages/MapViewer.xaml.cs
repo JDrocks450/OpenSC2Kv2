@@ -48,7 +48,7 @@ namespace OpenSC2KTools.MapViewer.Pages
 
         private void Load()
         {
-            var extractor = new SPRExtractor(new Uri(@"E:\Games\SC2K\GAME\Data\LARGE.DAT"));
+            var extractor = new SPRExtractor(new Uri(SC2Path.GetSpecialPath(SC2Path.SpecialPath.LargeDatFilePath)));
             var result = extractor.ExtractAll();
 
             if (result.Value == null) return;

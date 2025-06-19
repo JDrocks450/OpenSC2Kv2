@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using OpenSC2Kv2.API;
 using OpenSC2Kv2.API.Graphics;
 using OpenSC2Kv2.API.Graphics.Win95;
 using System;
@@ -32,7 +33,7 @@ namespace OpenSC2KTools.MapViewer.Pages
         private int currentIndex = 0, lastCurrentFrame = 0;
         private double currentFrame = 0, animationSpeed = 7.25;
         ConcurrentDictionary<string, ImageSource> imgDictionary = new();
-        Uri DATFilePath = new Uri(@"E:\Games\SC2K\GAME\Data\LARGE.DAT");
+        Uri DATFilePath = new Uri(SC2Path.GetSpecialPath(SC2Path.SpecialPath.LargeDatFilePath));
 
         Task anonymousLoadTask;
         Timer animationClock;
@@ -205,7 +206,7 @@ namespace OpenSC2KTools.MapViewer.Pages
         {
             OpenFileDialog dialog = new OpenFileDialog()
             {
-                InitialDirectory = @"E:\Games\SC2K\GAME\Data\",
+                InitialDirectory = SC2Path.GetSpecialPath(SC2Path.SpecialPath.GameDataDirectory),
                 Multiselect = false,
                 Title = "Open *.DAT File"
             };

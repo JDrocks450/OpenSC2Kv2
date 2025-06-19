@@ -10,6 +10,10 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File" >
                 <MenuItem x:Name="SC2Item" Click="SC2Item_Click" Header="Load SC2 File"/>
+                <Separator/>
+                <MenuItem x:Name="ClearSC2KItem" Click="ClearSC2KItem_Click" Header="Clear SimCity 2000 Installation Directory Path"/>
+                <Separator/>
+                <MenuItem x:Name="ExitItem" Click="ExitItem_Click" Header="Exit"/>
             </MenuItem>
             <MenuItem Header="View" >
                 <MenuItem Click="MenuItem_Click" Header="Graphics Tile Viewer"></MenuItem>

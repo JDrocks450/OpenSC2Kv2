@@ -2,11 +2,8 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="OpenSC2Kv2.Game" GeneratedClassName="GameSettings">
   <Profiles />
   <Settings>
-    <Setting Name="LargeGFXPath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">E:\Games\SC2K\GAME\Data\LARGE.DAT</Value>
-    </Setting>
-    <Setting Name="SmMedGFXPath" Type="System.String" Scope="Application">
-      <Value Profile="(Default)">E:\Games\SC2K\GAME\Data\SMALLMED.DAT</Value>
+    <Setting Name="InstallDir" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">E:\Games\SC2K\</Value>
     </Setting>
   </Settings>
 </SettingsFile>

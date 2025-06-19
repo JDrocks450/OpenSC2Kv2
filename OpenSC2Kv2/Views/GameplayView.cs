@@ -40,7 +40,7 @@ namespace OpenSC2Kv2.Game.Views
         {
             if (currentCity == null)
                 throw new ArgumentNullException($"currentCity is null!");
-            var largeDatPath = GameSettings.Default.LargeGFXPath;
+            var largeDatPath = SC2Path.GetSpecialPath(SC2Path.SpecialPath.LargeDatFilePath);
             graphicsExtractor = new(new Uri(largeDatPath));
         }
 
@@ -51,8 +51,8 @@ namespace OpenSC2Kv2.Game.Views
                 if (graphicsExtractor == null)
                     throw new ArgumentNullException("SC2 SPR Extractor is not set!");
                 var result = graphicsExtractor.ExtractAll();
-                if (result.Value == null)
-                    throw new ArgumentNullException($"Extractor load unsuccessful. Errors: {string.Join(',', result.Errors)}");
+                if (result?.Value == null)
+                    throw new ArgumentNullException($"Extractor load unsuccessful. Errors: {string.Join(',', result?.Errors ?? new string[0])}");
                 archive = result.Value;                
 
                 var tManager = ManagerRegistry.Get<ContentManager>();

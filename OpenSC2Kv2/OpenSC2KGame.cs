@@ -50,7 +50,7 @@ namespace OpenSC2Kv2.Game
 
         protected async Task LoadLarge()
         {
-            IFFParser parser = new IFFParser(new System.Uri(@"E:\Games\SC2K\GAME\CITIES\TOKYO.SC2"));
+            IFFParser parser = new IFFParser(new System.Uri(SC2Path.GetSpecialPath(SC2Path.SpecialPath.CitiesDirectory, "TOKYO.SC2")));
             await parser.ParseAsync();
 
             var currentView = new GameplayView(parser.LoadedWorld);
