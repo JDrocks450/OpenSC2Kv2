@@ -9,9 +9,34 @@ using System.Threading.Tasks;
 
 namespace OpenSC2Kv2.API.Graphics
 {
-    public class SPRRender
+    public static class SPRRender
     {
-        public Bitmap? Render(SC2GraphicResource Resource, int Frame, SC2Palette? Palette = default)
+        public static Color[] RenderRaw(SC2GraphicResource Resource, int Frame, SC2Palette? Palette = default)
+        {
+            if (Palette == null)
+                Palette = SC2Palette.Default;
+            var tile = Resource;
+            if (tile.Loaded)
+            {
+                return null;
+            }
+            var image = new Color[Resource.Width.Value * Resource.Height.Value];
+            for (int ty = 0; ty < tile.Header.Block.Rows.Count; ty++)
+            {
+                for (int tx = 0; tx < tile.Header.Block.Rows[ty].Pixels.Length; tx++)
+                {
+                    // palette index value
+                    SC2PaletteColor index = tile.Header.Block.Rows[ty].Pixels[tx];
+
+                    // set color and canvas x/y index
+                    //bitmap.setPixel(x + tx, y + ty, palette.getColor(index, f));
+                    image[ty * tile.Width.Value + tx] = Palette.GetColor(index, Frame);
+                }
+            }
+            return image;
+        }
+
+        public static Bitmap? Render(SC2GraphicResource Resource, int Frame, SC2Palette? Palette = default)
         {
             if (Palette == null)
                 Palette = SC2Palette.Default;
@@ -40,7 +65,7 @@ namespace OpenSC2Kv2.API.Graphics
             return image;
         }
 
-        public void ExportSheet(SC2SpriteArchive archive)
+        public static void ExportSheet(SC2SpriteArchive archive)
         {
             int x = 1;
             int y = 1;

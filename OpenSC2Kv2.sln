@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32421.90
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenSC2Kv2", "OpenSC2Kv2\OpenSC2Kv2.csproj", "{511CD779-F01C-4836-ABC7-D277A370B6AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSC2Kv2.Game", "OpenSC2Kv2\OpenSC2Kv2.Game.csproj", "{511CD779-F01C-4836-ABC7-D277A370B6AF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenSC2KTools.MapViewer", "OpenSC2KTools.MapViewer\OpenSC2KTools.MapViewer.csproj", "{645D95F1-B21C-4DC5-A114-9D71EFFD4250}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSC2KTools.MapViewer", "OpenSC2KTools.MapViewer\OpenSC2KTools.MapViewer.csproj", "{645D95F1-B21C-4DC5-A114-9D71EFFD4250}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenSC2Kv2.API", "OpenSC2Kv2.API\OpenSC2Kv2.API.csproj", "{5376E3B5-E7F7-4B5D-874A-F0549623E6AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OpenSC2Kv2.API", "OpenSC2Kv2.API\OpenSC2Kv2.API.csproj", "{5376E3B5-E7F7-4B5D-874A-F0549623E6AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

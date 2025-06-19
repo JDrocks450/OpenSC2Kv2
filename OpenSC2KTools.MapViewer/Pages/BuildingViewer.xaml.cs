@@ -27,7 +27,6 @@ namespace OpenSC2KTools.MapViewer.Pages
     /// </summary>
     public partial class BuildingViewer : Page
     {
-        private SPRRender renderer;
         SC2SpriteArchive archive;
         SC2GraphicResource currentResource;
         private int currentIndex = 0, lastCurrentFrame = 0;
@@ -54,7 +53,6 @@ namespace OpenSC2KTools.MapViewer.Pages
             Catelog.Children.Clear();
 
             var extractor = new SPRExtractor(DATFilePath);
-            renderer = new SPRRender();
 
             await Task.Run(async delegate
             {
@@ -159,7 +157,7 @@ namespace OpenSC2KTools.MapViewer.Pages
 
         private async Task<ImageSource?> LoadOne(SC2GraphicResource resource, int frame)
         {
-            if (archive == null || renderer == null)
+            if (archive == null)
                 return null;
             var name = resource.Header.ImageName + $"_{frame}";
             if (InteropBitmapCache._bitmaps.TryGetValue(name, out var imageS))
@@ -167,7 +165,7 @@ namespace OpenSC2KTools.MapViewer.Pages
             System.Drawing.Bitmap image = null;
             await Task.Run(delegate
             {
-                image = renderer.Render(resource, frame);
+                image = SPRRender.Render(resource, frame);
             });
             if (image is null) return null;
             ImageSource interopBitmap = null;

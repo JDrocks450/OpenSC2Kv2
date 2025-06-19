@@ -29,7 +29,6 @@ namespace OpenSC2KTools.MapViewer.Pages
     {
         bool ready => parser != null;
         IFFParser parser;
-        SPRRender renderer;
         SC2SpriteArchive archive;
         ImageSource tileAsset;
         Dictionary<SC2WorldTile, Image[]> tileMap = new();
@@ -60,8 +59,7 @@ namespace OpenSC2KTools.MapViewer.Pages
             var tileResource = archive.Graphics.Values.First();
             if (tileResource == null) return;
 
-            renderer = new SPRRender();
-            var image = renderer.Render(tileResource, 0);
+            var image = SPRRender.Render(tileResource, 0);
             
             tileAsset = InteropBitmapCache.ToInteropBitmap(tileResource.Header.ImageName, image);
             LoadingDescBlock.Text = "Select a City...";
@@ -93,7 +91,6 @@ namespace OpenSC2KTools.MapViewer.Pages
             {
                 foreach (var tile in World.WorldTiles)
                 {
-
                     Image[] images = null;
                     if (!tileMap.TryGetValue(tile, out images))
                     {
@@ -219,7 +216,7 @@ namespace OpenSC2KTools.MapViewer.Pages
             {
                 if (!InteropBitmapCache._bitmaps.TryGetValue(graphicResource.Header.ImageName, out var imageSource))
                 {
-                    var image = renderer.Render(graphicResource, 0, palette);
+                    var image = SPRRender.Render(graphicResource, 0, palette);
                     imageSource = InteropBitmapCache.ToInteropBitmap(graphicResource.Header.ImageName, image);
                 }
                 imageCtrl.Width = graphicResource.Width.Value;

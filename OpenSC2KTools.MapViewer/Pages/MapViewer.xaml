@@ -13,7 +13,7 @@
                 <MenuItem Name="DbgTilePosItem" Header="Update Tile Positions" Click="DbgTilePosItem_Click"/>
             </MenuItem>
         </Menu>
-        <Grid Background="#301001">
+        <Grid Background="#FF301000">
             <Grid x:Name="LoadingGrid" Margin="10" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Button IsEnabled="False"/>
                 <ProgressBar x:Name="RenderLoadBar" Width="200" Margin="10" Height="12" IsIndeterminate="True" VerticalAlignment="Top" Foreground="#FF00D703"/>

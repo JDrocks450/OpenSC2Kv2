@@ -43,7 +43,8 @@ namespace OpenSC2Kv2.API.World
         public GridCoordinate Coordinate { get; set; }
         public int TileWidth { get; set; } = TILE_WIDTH;
         public int TileHeight { get; set; } = TILE_HEIGHT;
-        public int TerrainID => TerrainDescription.TerrainID;
+        public int TerrainID => TerrainDescription.TerrainID;        
+
         /// <summary>
         /// If there is an override definition for this Terrain type, this will be set to match the set values.
         /// </summary>
@@ -135,6 +136,7 @@ namespace OpenSC2Kv2.API.World
             basePosition.Y -= Z * LAYER_OFFSET;
             return basePosition;
         }
+        public Point2D WorldPosition => GetWorldPos();
         /// <summary>
         /// Creates a new SC2WorldTile at the given space.
         /// </summary>
@@ -157,7 +159,8 @@ namespace OpenSC2Kv2.API.World
 
         public bool IsMultitile()
         {
-            return ((int)BuildingDescription.Type >= 0x8C && (int)BuildingDescription.Type <= 0xDA);
+            int type = (int)BuildingDescription.Type;
+            return ((type >= 0x8C && type <= 0xDA) && type != 0xC6 && type != 0xC7);
         }
     }
 }
